@@ -1,0 +1,46 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'idea'
+
+configurations {
+    provided
+    compile.extendsFrom provided
+}
+
+repositories {
+	mavenLocal()
+        mavenCentral()
+        jcenter()
+}
+
+group = 'com.tlabs.eve'
+version = '4.0'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.+'
+
+    compile 'commons-lang:commons-lang:2.6'
+    compile 'commons-io:commons-io:2.4'
+
+    compile 'com.fasterxml.jackson.core:jackson-core:2.6.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
+
+    compile ('commons-digester:commons-digester:1.8') {
+        exclude module: 'commons-logging'
+        exclude module: 'commons-lang'
+        exclude module: 'commons-io'
+        exclude module: 'commons-beanutils'
+    }
+
+    compile files('lib/jgrapht-core-0.9.0.jar')
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.slf4j:slf4j-log4j12:1.7.12'
+    
+    testCompile 'org.apache.httpcomponents:httpclient:4.3.6'
+    testCompile 'com.googlecode.openpojo:openpojo:0.6.2'
+
+}

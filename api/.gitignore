@@ -1,0 +1,39 @@
+# Build artefacts #
+###################
+target/**/*
+
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+#*.7z
+#*.dmg
+#*.gz
+#*.iso
+#*.jar
+#*.rar
+#*.tar
+#*.zip
+
+# Logs and databases #
+######################
+*.log
+
+# OS generated files #
+######################
+ehthumbs.db
+Thumbs.db
+.classpath
+.project
+.settings
+/src/main/test/resources/apikeys.properties
+/target
+/bin
+/build
+.idea/
+api.iml
+.gradle/
+eve-api.iml
+eve-api.ipr
+eve-api.iws

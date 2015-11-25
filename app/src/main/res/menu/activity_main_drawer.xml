@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_characters"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Characters" />
+        <item
+            android:id="@+id/nav_server_status"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Server Status" />
+        <item
+            android:id="@+id/nav_add_character"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Add Character" />
+    </group>
+</menu>
