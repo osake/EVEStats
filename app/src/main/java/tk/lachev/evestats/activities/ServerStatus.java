@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tlabs.eve.EveNetwork;
 import com.tlabs.eve.api.ServerStatusRequest;
@@ -44,17 +45,18 @@ public class ServerStatus extends AppCompatActivity {
         text1 = (TextView) findViewById(R.id.server_status_textview);
         text2 = (TextView) findViewById(id.players_online_textview);
 
-
+        final ServerStatusGet serverStatusGet = new ServerStatusGet(text1, text2);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Refreshing...", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Refreshing...", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
-                serverStatusGet.execute();
+                text1.setText("Refreshing...");
+                text2.setText("Refreshing...");
+                new ServerStatusGet(text1, text2).execute();
             }
-
         });
 
 
@@ -82,7 +84,6 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
         final EveNetwork eve = new DefaultEveNetwork();
         final ServerStatusRequest request = new ServerStatusRequest();
         final ServerStatusResponse status = eve.execute(request);
-        Log.d(ServerStatus.class.toString(), "Returninig status");
         return status;
     }
 
