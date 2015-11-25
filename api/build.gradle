@@ -24,6 +24,7 @@ dependencies {
 
     compile 'commons-lang:commons-lang:2.6'
     compile 'commons-io:commons-io:2.4'
+    compile 'commons-collections:commons-collections:3.2.1'
 
     compile 'com.fasterxml.jackson.core:jackson-core:2.6.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
@@ -33,6 +34,7 @@ dependencies {
         exclude module: 'commons-lang'
         exclude module: 'commons-io'
         exclude module: 'commons-beanutils'
+        exclude module: 'commons-collections'
     }
 
     compile files('lib/jgrapht-core-0.9.0.jar')
