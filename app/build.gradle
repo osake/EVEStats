@@ -41,3 +41,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.+'
     compile project(':api')
 }
+android {
+    useLibrary 'org.apache.http.legacy'
+}
