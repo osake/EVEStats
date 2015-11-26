@@ -99,6 +99,7 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
         else {
             _statusText.setText("Offline!");
             _statusText.setTextColor(ColorStateList.valueOf(Color.RED));
+            _playersOnline.setText("There are no player currently online currently on Tranquility.");
         }
 
     }

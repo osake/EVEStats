@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="tk.lachev.evestats.activities.Characters">
+    tools:context="tk.lachev.evestats.activities.Characters"
+    android:theme="@android:style/Theme.Material">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
