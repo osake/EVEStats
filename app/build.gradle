@@ -39,6 +39,7 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:cardview-v7:21.0.+'
     compile 'com.android.support:recyclerview-v7:21.0.+'
+    compile 'com.android.support:support-v4:21.0.+'
     compile project(':api')
 }
 android {
