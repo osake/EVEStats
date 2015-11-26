@@ -77,18 +77,25 @@ public class ServerStatus extends AppCompatActivity {
                         .setAction("Action", null).show();
                 serverStatus.setText("Refreshing...");
                 playersOnline.setText("Refreshing...");
-                serverTimeSing.setText("Refreshing...");
+                serverStatusSing.setText("Refreshing...");
                 playersOnlineSing.setText("Refreshing...");
+                refreshTime();
                 new ServerStatusGet(serverStatus, playersOnline, serverTime, serverStatusSing, playersOnlineSing, serverTimeSing).execute();
             }
         });
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
         Log.d(ServerStatus.class.toString(), "Executing");
         serverStatusGet.execute();
+    }
+    void refreshTime() {
+        SimpleDateFormat f = new SimpleDateFormat("HH:mm");
+        f.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+        serverTime.setText("Current server time: " + f.format(GregorianCalendar.getInstance().getTime()));
+        serverTimeSing.setText("Current server time: " + f.format(GregorianCalendar.getInstance().getTime()));
     }
 
 }
@@ -103,10 +110,10 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
     private String serviceStatusStr;
     private String userCountsStr;
 
-    public ServerStatusGet(TextView _playersOnline, TextView _statusText, TextView _serverTime, TextView playersOnlineSing, TextView statusTextSing, TextView serverTimeSing) {
-        this._playersOnline = _playersOnline;
-        this._statusText = _statusText;
-        this._serverTime = _serverTime;
+    public ServerStatusGet(TextView playersOnline, TextView statusText, TextView serverTime, TextView playersOnlineSing, TextView statusTextSing, TextView serverTimeSing) {
+        this._playersOnline = playersOnline;
+        this._statusText = statusText;
+        this._serverTime = serverTime;
         this._playersOnlineSing = playersOnlineSing;
         this._statusTextSing = statusTextSing;
         this._serverTimeSing = serverTimeSing;
@@ -143,9 +150,8 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
 
         final EveNetwork eve = new DefaultEveNetwork();
         final ServerStatusRequest request = new ServerStatusRequest();
-        final ServerStatusResponse status = eve.execute(request);
 
-        return status;
+        return eve.execute(request);
     }
 
     @Override
@@ -173,7 +179,7 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
             _playersOnlineSing.setText(userCountsStr + " players online currently on Singularity!");
         }
         else {
-            _statusTextSing.setText("Offline");
+            _statusTextSing.setText("Offline!");
             _statusTextSing.setTextColor(ColorStateList.valueOf(Color.RED));
             _playersOnlineSing.setText("There are no players currently online on Singularity.");
         }
