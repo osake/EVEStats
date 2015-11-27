@@ -37,7 +37,7 @@ public class AddCharacter extends AppCompatActivity {
     public EditText fieldKeyId;
     Button submitButton;
 
-    public final ProgressDialog progressDialog = new ProgressDialog(this);
+    public ProgressDialog progressDialog;
 
 
     @Override
@@ -52,7 +52,7 @@ public class AddCharacter extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        progressDialog = new ProgressDialog(this);
         fieldApiCode = (EditText) findViewById(R.id.verification_code);
         fieldKeyId = (EditText) findViewById(R.id.key_id);
         submitButton = (Button) findViewById(R.id.submit_button);
@@ -143,9 +143,9 @@ public class AddCharacter extends AppCompatActivity {
         @Override
         protected void onPostExecute(AccessInfoResponse response) {
             AccessInfo accessInfo = response.getAccessInfo();
-            if (accessInfo.getType() == AccessInfo.ACCOUNT) {
+            if (accessInfo.getType() == AccessInfo.CHARACTER) {
                 if (accessInfo.getExpires() == 0) {
-                    //TO:DO store key and id in json
+
                 } else {
                     Toast.makeText(getApplicationContext(), "You must provide a non-expiring API key.", Toast.LENGTH_LONG).show();
                 }
