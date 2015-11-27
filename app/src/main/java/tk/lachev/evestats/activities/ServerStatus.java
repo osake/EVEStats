@@ -37,6 +37,7 @@ import java.util.TimeZone;
 import tk.lachev.evestats.R;
 import utils.ServiceHandler;
 
+import static android.graphics.Color.rgb;
 import static tk.lachev.evestats.R.*;
 
 public class ServerStatus extends AppCompatActivity {
@@ -59,6 +60,7 @@ public class ServerStatus extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(id.toolbar);
         setSupportActionBar(toolbar);
 
+
         serverStatus = (TextView) findViewById(R.id.server_status_textview);
         playersOnline = (TextView) findViewById(id.players_online_textview);
         serverTime = (TextView) findViewById(id.server_time);
@@ -75,10 +77,7 @@ public class ServerStatus extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Refreshing...", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
-                serverStatus.setText("Refreshing...");
-                playersOnline.setText("Refreshing...");
-                serverStatusSing.setText("Refreshing...");
-                playersOnlineSing.setText("Refreshing...");
+
                 refreshTime();
                 new ServerStatusGet(serverStatus, playersOnline, serverTime, serverStatusSing, playersOnlineSing, serverTimeSing).execute();
             }
@@ -92,6 +91,14 @@ public class ServerStatus extends AppCompatActivity {
         serverStatusGet.execute();
     }
     void refreshTime() {
+        serverStatus.setText("Refreshing...");
+        playersOnline.setText("Refreshing...");
+        serverStatusSing.setText("Refreshing...");
+        playersOnlineSing.setText("Refreshing...");
+        serverStatus.setTextColor(rgb(234, 234, 234));
+        playersOnline.setTextColor(rgb(234, 234, 234));
+        serverStatusSing.setTextColor(rgb(234, 234, 234));
+        playersOnlineSing.setTextColor(rgb(234, 234, 234));
         SimpleDateFormat f = new SimpleDateFormat("HH:mm");
         f.setTimeZone(TimeZone.getTimeZone("Europe/London"));
         serverTime.setText("Current server time: " + f.format(GregorianCalendar.getInstance().getTime()));
@@ -107,8 +114,8 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
     private final TextView _playersOnlineSing;
     private final TextView _statusTextSing;
     private final TextView _serverTimeSing;
-    private String serviceStatusStr;
-    private String userCountsStr;
+    private String serviceStatusStr = null;
+    private String userCountsStr = null;
 
     public ServerStatusGet(TextView playersOnline, TextView statusText, TextView serverTime, TextView playersOnlineSing, TextView statusTextSing, TextView serverTimeSing) {
         this._playersOnline = playersOnline;
@@ -122,30 +129,28 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
     @Override
     protected ServerStatusResponse doInBackground(EveNetwork... params) {
 
-        final String TAG_SERVICESTATUS = "serviceStatus";
-        final String TAG_SERVICESTATUS_EVE = "eve";
-        final String TAG_USERCOUNTS = "userCounts";
-        final String TAG_USERCOUNTS_EVE = "eve_str";
-
-
         String url = "http://public-crest-sisi.testeveonline.com/";
         ServiceHandler sh = new ServiceHandler();
         String jsonStr = sh.makeServiceCall(url, ServiceHandler.GET);
-
         if (jsonStr != null) {
-            try {
-                JSONObject jsonObject = new JSONObject(jsonStr);
+            final String TAG_SERVICESTATUS = "serviceStatus";
+            final String TAG_SERVICESTATUS_EVE = "eve";
+            final String TAG_USERCOUNTS = "userCounts";
+            final String TAG_USERCOUNTS_EVE = "eve_str";
 
-                JSONObject serviceStatus = new JSONObject(jsonObject.getString(TAG_SERVICESTATUS));
-                serviceStatusStr = serviceStatus.getString(TAG_SERVICESTATUS_EVE);
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonStr);
 
-                JSONObject usercounts = new JSONObject(jsonObject.getString(TAG_USERCOUNTS));
-                userCountsStr = usercounts.getString(TAG_USERCOUNTS_EVE);
+                    JSONObject serviceStatus = new JSONObject(jsonObject.getString(TAG_SERVICESTATUS));
+                    serviceStatusStr = serviceStatus.getString(TAG_SERVICESTATUS_EVE);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    JSONObject usercounts = new JSONObject(jsonObject.getString(TAG_USERCOUNTS));
+                    userCountsStr = usercounts.getString(TAG_USERCOUNTS_EVE);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        }
 
 
         final EveNetwork eve = new DefaultEveNetwork();
@@ -162,10 +167,15 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
             _statusText.setTextColor(ColorStateList.valueOf(Color.GREEN));
             _playersOnline.setText(status.getOnlinePlayers() + " players online currently on Tranquility!");
         }
-        else {
+        else if (!status.getServerOpen() && !status.hasError()){
             _statusText.setText("Offline!");
             _statusText.setTextColor(ColorStateList.valueOf(Color.RED));
-            _playersOnline.setText("There are no player currently online currently on Tranquility.");
+            _playersOnline.setText("There are no players currently online currently on Tranquility.");
+        }
+        else {
+            _statusText.setText("Cannot reach server.");
+            _statusText.setTextColor(ColorStateList.valueOf(Color.RED));
+            _playersOnline.setText("Couldn't reach server to get player count.");
         }
 
         SimpleDateFormat f = new SimpleDateFormat("HH:mm");
@@ -173,15 +183,20 @@ class ServerStatusGet extends AsyncTask<EveNetwork, ServerStatusRequest, ServerS
         _serverTime.setText("Current server time: " + f.format(GregorianCalendar.getInstance().getTime()));
         _serverTimeSing.setText("Current server time: " + f.format(GregorianCalendar.getInstance().getTime()));
 
-        if(serviceStatusStr.equals("online")) {
+        if(serviceStatusStr != null && serviceStatusStr.equals("online")) {
             _statusTextSing.setText("Online!");
             _statusTextSing.setTextColor(ColorStateList.valueOf(Color.GREEN));
             _playersOnlineSing.setText(userCountsStr + " players online currently on Singularity!");
         }
-        else {
+        else if (serviceStatusStr != null && serviceStatusStr.equals("offline")) {
             _statusTextSing.setText("Offline!");
             _statusTextSing.setTextColor(ColorStateList.valueOf(Color.RED));
             _playersOnlineSing.setText("There are no players currently online on Singularity.");
+        }
+        else {
+            _statusTextSing.setText("Cannot reach server.");
+            _statusTextSing.setTextColor(ColorStateList.valueOf(Color.RED));
+            _playersOnlineSing.setText("Couldn't reach server to get player count.");
         }
     }
 }
