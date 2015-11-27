@@ -23,8 +23,8 @@ android:
     - sys-img-armeabi-v7a-android-23
     - sys-img-x86-android-17
 before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -f /.gradle/caches/modules-2/modules-2.lock
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+    - /.gradle/caches/
+    - /.gradle/wrapper/
