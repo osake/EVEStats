@@ -19,6 +19,7 @@ Android application to review your characters on the go!
 
 #### Possible features to be implemented in the near future:
  - Chat channels
+
 <hr>
 *Anything possible really with the current EVE API I would try doing it if it seems fun and useful to do.*
 
