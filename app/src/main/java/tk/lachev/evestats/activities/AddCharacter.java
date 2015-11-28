@@ -1,11 +1,9 @@
 package tk.lachev.evestats.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -16,17 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tlabs.eve.EveNetwork;
 import com.tlabs.eve.api.AccessInfo;
 import com.tlabs.eve.api.AccessInfoRequest;
 import com.tlabs.eve.api.AccessInfoResponse;
-import com.tlabs.eve.api.ServerStatusRequest;
-import com.tlabs.eve.api.ServerStatusResponse;
 import com.tlabs.eve.net.DefaultEveNetwork;
-import com.tlabs.eve.parser.BooleanDeserializer;
 
 import tk.lachev.evestats.R;
+import utils.Character;
+import utils.DatabaseHandler;
 
 public class AddCharacter extends AppCompatActivity {
 
@@ -36,13 +32,12 @@ public class AddCharacter extends AppCompatActivity {
     public EditText fieldApiCode;
     public EditText fieldKeyId;
     Button submitButton;
-
+    public SharedPreferences characters;
     public ProgressDialog progressDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
 
         super.onCreate(savedInstanceState);
@@ -51,7 +46,6 @@ public class AddCharacter extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         progressDialog = new ProgressDialog(this);
         fieldApiCode = (EditText) findViewById(R.id.verification_code);
         fieldKeyId = (EditText) findViewById(R.id.key_id);
@@ -145,7 +139,9 @@ public class AddCharacter extends AppCompatActivity {
             AccessInfo accessInfo = response.getAccessInfo();
             if (accessInfo.getType() == AccessInfo.CHARACTER) {
                 if (accessInfo.getExpires() == 0) {
-
+                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                    db.addCharacter(new Character(apiKey, keyId));
+                    Toast.makeText(getApplicationContext(), "Character added.", Toast.LENGTH_SHORT);
                 } else {
                     Toast.makeText(getApplicationContext(), "You must provide a non-expiring API key.", Toast.LENGTH_LONG).show();
                 }

@@ -1,7 +1,5 @@
 package tk.lachev.evestats.activities;
 
-import android.app.Service;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -10,13 +8,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tlabs.eve.EveNetwork;
 import com.tlabs.eve.api.ServerStatusRequest;
@@ -25,12 +19,8 @@ import com.tlabs.eve.net.DefaultEveNetwork;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.net.URL;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -38,7 +28,8 @@ import tk.lachev.evestats.R;
 import utils.ServiceHandler;
 
 import static android.graphics.Color.rgb;
-import static tk.lachev.evestats.R.*;
+import static tk.lachev.evestats.R.id;
+import static tk.lachev.evestats.R.layout;
 
 public class ServerStatus extends AppCompatActivity {
 
