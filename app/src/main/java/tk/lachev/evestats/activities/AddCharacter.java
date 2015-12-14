@@ -1,6 +1,7 @@
 package tk.lachev.evestats.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,11 +15,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tlabs.eve.EveNetwork;
 import com.tlabs.eve.api.AccessInfo;
 import com.tlabs.eve.api.AccessInfoRequest;
 import com.tlabs.eve.api.AccessInfoResponse;
+import com.tlabs.eve.api.EveAPI;
+import com.tlabs.eve.api.NamesRequest;
+import com.tlabs.eve.api.NamesResponse;
+import com.tlabs.eve.api.character.CharacterSheet;
 import com.tlabs.eve.net.DefaultEveNetwork;
+import com.tlabs.eve.parser.BooleanDeserializer;
+
+import java.util.List;
 
 import tk.lachev.evestats.R;
 import utils.Character;
@@ -111,7 +120,8 @@ public class AddCharacter extends AppCompatActivity {
 
         String apiKey;
         String keyId;
-
+        AccessInfoResponse response;
+        String name = null;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -120,35 +130,69 @@ public class AddCharacter extends AppCompatActivity {
             progressDialog.setMessage("Please wait...");
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.show();
-            apiKey = fieldApiCode.toString();
-            keyId = fieldKeyId.toString();
+            apiKey = fieldApiCode.getText().toString();
+            keyId = fieldKeyId.getText().toString();
         }
 
         @Override
         protected AccessInfoResponse doInBackground(EveNetwork... params) {
-
             final EveNetwork eve = new DefaultEveNetwork();
 
             final AccessInfoRequest request = new AccessInfoRequest(keyId, apiKey);
 
-            return eve.execute(request);
-        }
+            response = eve.execute(request);
 
+            AccessInfo accessInfo = response.getAccessInfo();
+
+            List<CharacterSheet> list = response.getCharacters();
+
+            if (list.size() == 1) {
+                name = list.get(0).getCharacterName();
+            }
+
+            return response;
+        }
         @Override
         protected void onPostExecute(AccessInfoResponse response) {
-            AccessInfo accessInfo = response.getAccessInfo();
-            if (accessInfo.getType() == AccessInfo.CHARACTER) {
-                if (accessInfo.getExpires() == 0) {
-                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                    db.addCharacter(new Character(apiKey, keyId));
-                    Toast.makeText(getApplicationContext(), "Character added.", Toast.LENGTH_SHORT);
-                } else {
-                    Toast.makeText(getApplicationContext(), "You must provide a non-expiring API key.", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(getApplicationContext(), "You must provide a full-access API key", Toast.LENGTH_LONG).show();
-            }
+            Log.d("App", apiKey + " " + keyId);
+            Log.d("App", response.hasError() + " " + response.getExpires() + " " + response.hasAuthenticationError() + " " + response.getErrorCode());
             progressDialog.hide();
+            if (!response.hasError() && response.getExpires() == 0 && response.getAccessMask() == 1073741823 && name != null) {
+
+
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                Boolean exists = false;
+
+                List<Character> list = db.getAllCharacters();
+
+                Log.d("app", list.toString());
+                if (!list.isEmpty()) {
+                    for (int i = 0; i < list.size() || !exists; i++) {
+                        Character c = list.get(i);
+                        if (c.get_apiKey().equals(apiKey)) exists = true;
+                    }
+                }
+                if (!exists || list.isEmpty()) {
+                    db.addCharacter(new Character(apiKey, keyId, name));
+                    Toast.makeText(getApplicationContext(), "Character added.", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), Characters.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Character already exists.", Toast.LENGTH_LONG).show();
+                    fieldApiCode.setText("");
+                    fieldKeyId.setText("");
+                }
+
+            } else if (response.getExpires() != 0) {
+                Toast.makeText(getApplicationContext(), "You must provide a non-expiring API key.", Toast.LENGTH_LONG).show();
+            } else if (response.getAccessMask() != 1073741823) {
+                Toast.makeText(getApplicationContext(), "You must provide a full-access API key.", Toast.LENGTH_LONG).show();
+            } else if (response.hasError()) {
+                Toast.makeText(getApplicationContext(), "Invalid verification code/key ID.", Toast.LENGTH_LONG).show();
+            } else if (name == null) {
+                Toast.makeText(getApplicationContext(), "You must provide an API key for a single character", Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 }

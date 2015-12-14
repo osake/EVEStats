@@ -7,10 +7,29 @@ public class Character {
     int _id;
     String _apiKey;
     String _keyId;
+    String _name;
 
-    public Character(String _apiKey, String _keyId) {
-        this._apiKey = _apiKey;
-        this._keyId = _keyId;
+    public Character(String apiKey, String keyId, String name) {
+        this._apiKey = apiKey;
+        this._keyId = keyId;
+        this._name = name;
+    }
+
+    public Character() {
+
+    }
+
+    public String get_name() {
+        return _name;
+    }
+
+    public void set_name(String _name) {
+        this._name = _name;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s,%s", get_keyId(), get_apiKey());
     }
 
     public int get_id() {
@@ -37,14 +56,7 @@ public class Character {
         this._keyId = _keyId;
     }
 
-    public Character(int _id, String _apiKey, String _keyId) {
-
-        this._id = _id;
-        this._apiKey = _apiKey;
-        this._keyId = _keyId;
-    }
-
-    public Character() {
+    public Character(int i, String string, String cursorString, String s) {
 
     }
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tk.lachev.evestats">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/eve"
@@ -44,6 +46,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tk.lachev.evestats.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.browser.Character"
+            android:label="@string/title_activity_character"
+            android:parentActivityName=".activities.Characters">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tk.lachev.evestats.activities.Characters" />
         </activity>
     </application>
 

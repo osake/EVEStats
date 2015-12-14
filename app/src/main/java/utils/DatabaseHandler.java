@@ -21,6 +21,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_API_KEY = "apiKey";
     private static final String KEY_ID_KEY = "keyId";
+    private static final String KEY_NAME = "name";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,7 +32,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CHARACTERS_TABLE = "CREATE TABLE " + TABLE_CHARACTERS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_API_KEY + " TEXT,"
-                + KEY_ID_KEY + " TEXT" + ")";
+                + KEY_ID_KEY + " TEXT," + KEY_NAME + " TEXT"+ ")";
         db.execSQL(CREATE_CHARACTERS_TABLE);
     }
 
@@ -62,7 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        Character character = new Character(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2));
+        Character character = new Character(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3));
 
         return character;
     }
@@ -79,6 +80,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 character.set_id(Integer.parseInt(cursor.getString(0)));
                 character.set_apiKey(cursor.getString(1));
                 character.set_keyId(cursor.getString(2));
+                characterList.add(character);
             } while (cursor.moveToNext());
         }
         return characterList;
