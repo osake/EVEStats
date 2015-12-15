@@ -48,7 +48,7 @@
                 android:value="tk.lachev.evestats.MainActivity" />
         </activity>
         <activity
-            android:name=".activities.browser.Character"
+            android:name=".activities.browser.CharacterViewer"
             android:label="@string/title_activity_character"
             android:parentActivityName=".activities.Characters">
             <meta-data

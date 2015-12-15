@@ -5,7 +5,13 @@ import android.app.Activity;
 
 import tk.lachev.evestats.R;
 
-public class Character extends Activity {
+public class CharacterViewer extends Activity {
+
+    Character _c;
+
+    public CharacterViewer(Character c) {
+        this._c = c;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

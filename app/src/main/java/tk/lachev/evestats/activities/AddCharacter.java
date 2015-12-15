@@ -149,7 +149,7 @@ public class AddCharacter extends AppCompatActivity {
             accessInfo = response.getAccessInfo();
             List<CharacterSheet> characterSheets = accessInfo.getCharacters();
 
-            Log.d("Character Sheet", characterSheets.toString());
+            Log.d("CharacterViewer Sheet", characterSheets.toString());
             Log.d("0 name", characterSheets.get(0).getCharacterName());
 
             if (!characterSheets.isEmpty() && characterSheets.size() == 1) {
@@ -159,17 +159,15 @@ public class AddCharacter extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(AccessInfoResponse response) {
+
             Log.d("App", apiKey + " " + keyId);
             Log.d("App", response.hasError() + " " + response.getExpires() + " " + response.hasAuthenticationError() + " " + response.getErrorCode());
             progressDialog.hide();
+
             if (!response.hasError() && accessInfo.getExpires() == 0 && accessInfo.getAccessMask() == 1073741823 && name != null) {
-
-
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                 Boolean exists = false;
-
                 List<Character> list = db.getAllCharacters();
-
                 Log.d("app", list.toString());
                 if (!list.isEmpty()) {
                     for (int i = 0; i < list.size() || !exists; i++) {
@@ -187,13 +185,17 @@ public class AddCharacter extends AppCompatActivity {
                     fieldApiCode.setText("");
                     fieldKeyId.setText("");
                 }
-
+            } else if (response.hasError()) {
+                if (response.getErrorCode() == 400) {
+                    Toast.makeText(getApplicationContext(), "Bad Request. Possibly wrong keyId/verification code?", Toast.LENGTH_LONG).show();
+                }
+                if (response.getErrorCode() == 408) {
+                    Toast.makeText(getApplicationContext(), "Request timeout.", Toast.LENGTH_SHORT).show();
+                }
             } else if (accessInfo.getExpires() != 0) {
                 Toast.makeText(getApplicationContext(), "You must provide a non-expiring API key.", Toast.LENGTH_LONG).show();
             } else if (accessInfo.getAccessMask() != 1073741823) {
                 Toast.makeText(getApplicationContext(), "You must provide a full-access API key.", Toast.LENGTH_LONG).show();
-            } else if (response.hasError()) {
-                Toast.makeText(getApplicationContext(), "Invalid verification code/key ID.", Toast.LENGTH_LONG).show();
             } else if (name == null) {
                 Toast.makeText(getApplicationContext(), "You must provide an API key for a single character", Toast.LENGTH_LONG).show();
             }
