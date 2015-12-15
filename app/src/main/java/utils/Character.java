@@ -29,7 +29,7 @@ public class Character {
 
     @Override
     public String toString() {
-        return String.format("%s,%s", get_keyId(), get_apiKey());
+        return String.format("%s,%s,%s", get_keyId(), get_apiKey(),get_name());
     }
 
     public int get_id() {

@@ -81,6 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 character.set_id(Integer.parseInt(cursor.getString(0)));
                 character.set_apiKey(cursor.getString(1));
                 character.set_keyId(cursor.getString(2));
+                character.set_name(cursor.getString(3));
                 characterList.add(character);
             } while (cursor.moveToNext());
         }

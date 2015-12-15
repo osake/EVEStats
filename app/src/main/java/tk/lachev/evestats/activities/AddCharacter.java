@@ -15,26 +15,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tlabs.eve.EveNetwork;
 import com.tlabs.eve.api.AccessInfo;
 import com.tlabs.eve.api.AccessInfoRequest;
 import com.tlabs.eve.api.AccessInfoResponse;
-import com.tlabs.eve.api.EveAPI;
-import com.tlabs.eve.api.NamesRequest;
-import com.tlabs.eve.api.NamesResponse;
-import com.tlabs.eve.api.character.CharacterInfoRequest;
-import com.tlabs.eve.api.character.CharacterRequest;
 import com.tlabs.eve.api.character.CharacterSheet;
-import com.tlabs.eve.api.character.CharacterSheetRequest;
 import com.tlabs.eve.net.DefaultEveNetwork;
-import com.tlabs.eve.parser.BooleanDeserializer;
 
 import java.util.List;
 
 import tk.lachev.evestats.R;
 import utils.Character;
 import utils.DatabaseHandler;
+import utils.PortraitDownload;
 
 public class AddCharacter extends AppCompatActivity {
 
@@ -121,11 +114,13 @@ public class AddCharacter extends AppCompatActivity {
     }
     public class TestApiKey extends AsyncTask<EveNetwork, AccessInfoRequest, AccessInfoResponse> {
 
+
         String apiKey;
         String keyId;
         AccessInfoResponse response;
         String name = null;
         AccessInfo accessInfo;
+        List<CharacterSheet> characterSheets;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -147,14 +142,16 @@ public class AddCharacter extends AppCompatActivity {
             response = eve.execute(request);
 
             accessInfo = response.getAccessInfo();
-            List<CharacterSheet> characterSheets = accessInfo.getCharacters();
-
-            Log.d("CharacterViewer Sheet", characterSheets.toString());
-            Log.d("0 name", characterSheets.get(0).getCharacterName());
+            characterSheets = accessInfo.getCharacters();
 
             if (!characterSheets.isEmpty() && characterSheets.size() == 1) {
                 name = characterSheets.get(0).getCharacterName();
             }
+
+            PortraitDownload download = new PortraitDownload();
+
+            download.downloadImage(getApplicationContext(), characterSheets);
+
             return response;
         }
         @Override
@@ -176,7 +173,10 @@ public class AddCharacter extends AppCompatActivity {
                     }
                 }
                 if (!exists || list.isEmpty() && name != null) {
-                    db.addCharacter(new Character(apiKey, keyId, name));
+                    for (CharacterSheet c : characterSheets) {
+                        db.addCharacter(new Character(keyId, keyId, c.getCharacterName()));
+                    }
+                    //db.addCharacter(new Character(apiKey, keyId, name));
                     Toast.makeText(getApplicationContext(), "Character added.", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), Characters.class);
                     startActivity(intent);
