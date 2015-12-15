@@ -23,7 +23,10 @@ import com.tlabs.eve.api.AccessInfoResponse;
 import com.tlabs.eve.api.EveAPI;
 import com.tlabs.eve.api.NamesRequest;
 import com.tlabs.eve.api.NamesResponse;
+import com.tlabs.eve.api.character.CharacterInfoRequest;
+import com.tlabs.eve.api.character.CharacterRequest;
 import com.tlabs.eve.api.character.CharacterSheet;
+import com.tlabs.eve.api.character.CharacterSheetRequest;
 import com.tlabs.eve.net.DefaultEveNetwork;
 import com.tlabs.eve.parser.BooleanDeserializer;
 
@@ -122,6 +125,7 @@ public class AddCharacter extends AppCompatActivity {
         String keyId;
         AccessInfoResponse response;
         String name = null;
+        AccessInfo accessInfo;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -142,14 +146,15 @@ public class AddCharacter extends AppCompatActivity {
 
             response = eve.execute(request);
 
-            AccessInfo accessInfo = response.getAccessInfo();
+            accessInfo = response.getAccessInfo();
+            List<CharacterSheet> characterSheets = accessInfo.getCharacters();
 
-            List<CharacterSheet> list = response.getCharacters();
+            Log.d("Character Sheet", characterSheets.toString());
+            Log.d("0 name", characterSheets.get(0).getCharacterName());
 
-            if (list.size() == 1) {
-                name = list.get(0).getCharacterName();
+            if (!characterSheets.isEmpty() && characterSheets.size() == 1) {
+                name = characterSheets.get(0).getCharacterName();
             }
-
             return response;
         }
         @Override
@@ -157,7 +162,7 @@ public class AddCharacter extends AppCompatActivity {
             Log.d("App", apiKey + " " + keyId);
             Log.d("App", response.hasError() + " " + response.getExpires() + " " + response.hasAuthenticationError() + " " + response.getErrorCode());
             progressDialog.hide();
-            if (!response.hasError() && response.getExpires() == 0 && response.getAccessMask() == 1073741823 && name != null) {
+            if (!response.hasError() && accessInfo.getExpires() == 0 && accessInfo.getAccessMask() == 1073741823 && name != null) {
 
 
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
@@ -172,7 +177,7 @@ public class AddCharacter extends AppCompatActivity {
                         if (c.get_apiKey().equals(apiKey)) exists = true;
                     }
                 }
-                if (!exists || list.isEmpty()) {
+                if (!exists || list.isEmpty() && name != null) {
                     db.addCharacter(new Character(apiKey, keyId, name));
                     Toast.makeText(getApplicationContext(), "Character added.", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), Characters.class);
@@ -183,9 +188,9 @@ public class AddCharacter extends AppCompatActivity {
                     fieldKeyId.setText("");
                 }
 
-            } else if (response.getExpires() != 0) {
+            } else if (accessInfo.getExpires() != 0) {
                 Toast.makeText(getApplicationContext(), "You must provide a non-expiring API key.", Toast.LENGTH_LONG).show();
-            } else if (response.getAccessMask() != 1073741823) {
+            } else if (accessInfo.getAccessMask() != 1073741823) {
                 Toast.makeText(getApplicationContext(), "You must provide a full-access API key.", Toast.LENGTH_LONG).show();
             } else if (response.hasError()) {
                 Toast.makeText(getApplicationContext(), "Invalid verification code/key ID.", Toast.LENGTH_LONG).show();

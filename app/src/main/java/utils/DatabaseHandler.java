@@ -49,6 +49,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_API_KEY, character.get_apiKey());
         values.put(KEY_ID_KEY, character.get_keyId());
+        values.put(KEY_NAME, character.get_name());
 
         db.insert(TABLE_CHARACTERS, null, values);
         db.close();
