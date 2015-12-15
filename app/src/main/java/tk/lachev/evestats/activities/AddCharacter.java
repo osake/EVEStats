@@ -161,20 +161,20 @@ public class AddCharacter extends AppCompatActivity {
             Log.d("App", response.hasError() + " " + response.getExpires() + " " + response.hasAuthenticationError() + " " + response.getErrorCode());
             progressDialog.hide();
 
-            if (!response.hasError() && accessInfo.getExpires() == 0 && accessInfo.getAccessMask() == 1073741823 && name != null) {
+            if (!response.hasError() && accessInfo.getExpires() == 0 && accessInfo.getAccessMask() == 1073741823 && characterSheets.size() == 1) {
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                 Boolean exists = false;
                 List<Character> list = db.getAllCharacters();
                 Log.d("app", list.toString());
                 if (!list.isEmpty()) {
-                    for (int i = 0; i < list.size() || !exists; i++) {
+                    for (int i = 0; i < list.size() - 1 || !exists; i++) {
                         Character c = list.get(i);
                         if (c.get_apiKey().equals(apiKey)) exists = true;
                     }
                 }
-                if (!exists || list.isEmpty() && name != null) {
+                if (!exists || list.isEmpty() && name != null && characterSheets.size() == 1) {
                     for (CharacterSheet c : characterSheets) {
-                        db.addCharacter(new Character(keyId, keyId, c.getCharacterName()));
+                        db.addCharacter(new Character(keyId, apiKey, c.getCharacterName(), String.valueOf(c.getCharacterID())));
                     }
                     //db.addCharacter(new Character(apiKey, keyId, name));
                     Toast.makeText(getApplicationContext(), "Character added.", Toast.LENGTH_LONG).show();
@@ -197,7 +197,9 @@ public class AddCharacter extends AppCompatActivity {
             } else if (accessInfo.getAccessMask() != 1073741823) {
                 Toast.makeText(getApplicationContext(), "You must provide a full-access API key.", Toast.LENGTH_LONG).show();
             } else if (name == null) {
-                Toast.makeText(getApplicationContext(), "You must provide an API key for a single character", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "You must provide an API key for a single character.", Toast.LENGTH_LONG).show();
+            } else if (characterSheets.size() > 1) {
+                Toast.makeText(getApplicationContext(), "You must provide an API key for a single character.", Toast.LENGTH_LONG).show();
             }
 
         }

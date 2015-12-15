@@ -8,11 +8,22 @@ public class Character {
     String _apiKey;
     String _keyId;
     String _name;
+    String _charId;
 
-    public Character(String apiKey, String keyId, String name) {
+    public String get_charId() {
+        return _charId;
+    }
+
+    public void set_charId(String _charId) {
+        this._charId = _charId;
+    }
+
+    public Character(String apiKey, String keyId, String name, String charId) {
         this._apiKey = apiKey;
         this._keyId = keyId;
         this._name = name;
+        this._charId = charId;
+
     }
 
     public Character() {

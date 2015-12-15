@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/cv"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +18,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/name"/>
+            android:id="@+id/name"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:text="asdf" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

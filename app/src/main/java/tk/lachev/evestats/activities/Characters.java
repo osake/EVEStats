@@ -42,7 +42,7 @@ public class Characters extends AppCompatActivity {
         DatabaseHandler db = new DatabaseHandler(this);
         List<Character> characterList = db.getAllCharacters();
 
-        RVAdapter adapter = new RVAdapter(characterList);
+        RVAdapter adapter = new RVAdapter(characterList, getApplicationContext());
         recyclerView.setAdapter(adapter);
     }
     private String[] getNames(List<Character> list) {

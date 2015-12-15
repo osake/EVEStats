@@ -26,13 +26,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="EVE Stats"
+        android:text="@string/title"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="v0.3_26.11.2015.1123" />
+        android:text="v0.7_15.12.2015-1709" />
 
 </LinearLayout>

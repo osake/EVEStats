@@ -36,7 +36,7 @@ public class PortraitDownload {
                 Log.v("", "inside mkdir");
             }
 
-            String fname = characterSheets.get(0).getCharacterName();
+            String fname = characterSheets.get(0).getCharacterName() + ".png";
             File file = new File(myDir, fname);
             Log.d("file===========path", "" + file);
             if (file.exists())
@@ -73,7 +73,7 @@ public class PortraitDownload {
         ContextWrapper cw = new ContextWrapper(context);
 
         //path to /data/data/yourapp/app_data/dirName
-        File directory = cw.getDir("files", Context.MODE_PRIVATE);
+        File directory = cw.getDir("portraits", Context.MODE_PRIVATE);
 
         File mypath=new File(directory,"folder/"+path);
 

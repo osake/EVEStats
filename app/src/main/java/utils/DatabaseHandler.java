@@ -22,6 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_API_KEY = "apiKey";
     private static final String KEY_ID_KEY = "keyId";
     private static final String KEY_NAME = "name";
+    private static final String KEY_CHAR_ID = "charId";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,7 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CHARACTERS_TABLE = "CREATE TABLE " + TABLE_CHARACTERS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_API_KEY + " TEXT,"
-                + KEY_ID_KEY + " TEXT," + KEY_NAME + " TEXT"+ ")";
+                + KEY_ID_KEY + " TEXT," + KEY_NAME + " TEXT,"+ KEY_CHAR_ID + " TEXT" + ")";
         db.execSQL(CREATE_CHARACTERS_TABLE);
     }
 
@@ -50,6 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_API_KEY, character.get_apiKey());
         values.put(KEY_ID_KEY, character.get_keyId());
         values.put(KEY_NAME, character.get_name());
+        values.put(KEY_CHAR_ID, character.get_charId());
 
         db.insert(TABLE_CHARACTERS, null, values);
         db.close();
@@ -82,6 +84,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 character.set_apiKey(cursor.getString(1));
                 character.set_keyId(cursor.getString(2));
                 character.set_name(cursor.getString(3));
+                character.set_charId(cursor.getString(4));
                 characterList.add(character);
             } while (cursor.moveToNext());
         }
@@ -104,6 +107,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_API_KEY, character.get_apiKey());
         values.put(KEY_ID_KEY, character.get_keyId());
+        values.put(KEY_NAME, character.get_name());
+        values.put(KEY_CHAR_ID, character.get_charId());
 
         return db.update(TABLE_CHARACTERS, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(character.get_id())});
